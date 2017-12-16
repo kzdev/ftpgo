@@ -5,14 +5,16 @@ import (
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/kzdev/ftpgo"
 )
 
 func main() {
 	var err error
-	var ftpConn *common.EkpsFtp
+	var ftpConn *ftpgo.Ftp
 
 	addr := net.JoinHostPort("192.168.10.1", strconv.Itoa(21))
-	if ftpConn, err = common.FtpConnect(addr, time.Duration(5)*time.Second); err != nil {
+	if ftpConn, err = ftpgo.FtpConnect(addr, time.Duration(5)*time.Second); err != nil {
 		fmt.Println(err.Error())
 	}
 	defer ftpConn.Quit()
