@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+//Ftp struct
 type Ftp struct {
 	passive       bool
 	textprotoConn *textproto.Conn
@@ -26,6 +27,7 @@ func init() {
 	regexp227, _ = regexp.Compile("([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+)")
 }
 
+//FtpConnect Connect to server
 func FtpConnect(addr string, timeout time.Duration) (*Ftp, error) {
 	conn, err := net.DialTimeout("tcp4", addr, timeout)
 	if err != nil {
@@ -172,7 +174,7 @@ func (c *Ftp) Quit() error {
 
 // Size Request the size of the file named filename on the server.
 // On success, the size of the file is returned as an integer.
-// ftp server extention command.
+// ftp server extension command.
 func (c *Ftp) Size(filename string) (int, error) {
 	_, msg, err := c.SendCmd(213, "SIZE %s", filename)
 	if err != nil {
@@ -270,7 +272,7 @@ func (c *Ftp) List(args ...string) (lines []string, err error) {
 }
 
 // Dir issues a LIST FTP command.
-func (c *Ftp) Dir(args ...string) (infos []*EkpsFile, err error) {
+func (c *Ftp) Dir(args ...string) (infos []*FtpFile, err error) {
 	cmd := append([]string{"LIST"}, args...)
 	val := strings.Join(cmd, " ")
 	conn, err := c.transferCmd(val)
@@ -284,7 +286,7 @@ func (c *Ftp) Dir(args ...string) (infos []*EkpsFile, err error) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()
-		fileinfo, err := NewEkpsFile(line)
+		fileinfo, err := NewFtpFile(line)
 		if err == nil {
 			infos = append(infos, fileinfo)
 		}
