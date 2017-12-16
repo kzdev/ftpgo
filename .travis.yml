@@ -10,9 +10,6 @@ go:
 git:
   depth: 3
 
-install:
- - make install
-
 script:
   - make vet
   - make fmt-check
